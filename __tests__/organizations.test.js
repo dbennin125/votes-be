@@ -20,4 +20,8 @@ describe('vote routes', () => {
     await mongoose.connection.close();
     return mongod.stop();
   });
+
+  it('creates a organization via POST', () => {
+
+  });
 });
