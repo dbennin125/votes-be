@@ -63,7 +63,7 @@ describe('User routes', () => {
       });
   });
 
-  it('updates a user via PATCH', () => {
+  it('updates a user by ID via PATCH', () => {
     return User.create({ 
       name: 'Bob',
       phone: '15031112222',
@@ -89,7 +89,7 @@ describe('User routes', () => {
       });
   });
 
-  it('deletes a user via DELETE route', () => {
+  it('deletes a user by ID via DELETE route', () => {
     return User.create({ 
       name: 'Bob',
       phone: '15031112222',

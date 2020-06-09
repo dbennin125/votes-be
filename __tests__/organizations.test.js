@@ -7,7 +7,7 @@ const Organization = require('../lib/models/Organization')
 const request = require('supertest');
 const app = require('../lib/app');
 
-describe('vote routes', () => {
+describe('Organization routes', () => {
   beforeAll(async() => {
     const uri = await mongod.getUri();
     return connect(uri);
@@ -57,7 +57,7 @@ describe('vote routes', () => {
       });
   });
 
-  it('updates an organization via PATCH', () => {
+  it('updates an organization by ID via PATCH', () => {
     return Organization.create({ 
       title: 'Brunch Club',
       description: 'A club for brunch',
@@ -79,7 +79,7 @@ describe('vote routes', () => {
       });
   });
 
-  it('gets an organization via ID', () => {
+  it('gets an organization by ID via GET', () => {
     return Organization.create({ 
       title: 'Brunch Club',
       description: 'A club for brunch',
@@ -100,7 +100,7 @@ describe('vote routes', () => {
       });
   });
 
-  it('deletes an organization via ID', () => {
+  it('deletes an organization by ID via DELETE', () => {
     return Organization.create({ 
       title: 'Delete Club',
       description: 'A club for deleting',
@@ -121,7 +121,7 @@ describe('vote routes', () => {
       });
   });
 
-  it ('gets all organization with title, description and ID via GET', async() =>{
+  it ('gets all organizations with titles, imageURLs and IDs via GET', async() =>{
     await Organization.create([
       {
         title: 'Delete Club',
