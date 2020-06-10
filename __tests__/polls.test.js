@@ -108,4 +108,55 @@ describe('Poll routes', () => {
         });
       });
   });
+
+  it('gets a poll by ID and updates via PATCH', () => {
+    return Poll.create({
+      organization: organization._id,
+      title: 'Monday Mania',
+      description: 'Mania on Monday',
+      list: 'option4'
+    })
+      .then(poll => {
+        return request(app)
+          .patch(`/api/v1/polls/${poll.id}`)
+          .send({
+            title: 'Freebie Friday',
+            list: 'option3'
+          });
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          organization: organization.id,
+          title: 'Freebie Friday',
+          description: 'Mania on Monday',
+          list: 'option3',
+          __v: 0,
+        });
+      });
+  });
+
+  it('gets a poll by ID and deletes via DELETE', () => {
+    return Poll.create({
+      organization: organization._id,
+      title: 'Monday Mania',
+      description: 'Mania on Monday',
+      list: 'option4'
+    })
+      .then(poll => {
+        return request(app)
+          .delete(`/api/v1/polls/${poll.id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          organization: organization.id,
+          title: 'Monday Mania',
+          description: 'Mania on Monday',
+          list: 'option4',
+          __v: 0,
+        });
+      });
+  });
+
 });
