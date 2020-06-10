@@ -33,7 +33,7 @@ describe('Poll routes', () => {
     return mongod.stop();
   });
 
-  it.only('creates a poll via POST', async() => {
+  it('creates a poll via POST', async() => {
     return request(app)
       .post('/api/v1/polls')
       .send({
@@ -51,6 +51,38 @@ describe('Poll routes', () => {
           list: 'option1',
           __v: 0
         });
+      });
+  });
+
+  it.only('gets all polls for an organization\'s ID via GET', async() => {
+    await Poll.create([
+      {
+        organization: organization._id,
+        title: 'Taco Tuesday',
+        description: 'Tacos on Tuesday',
+        list: 'option2'
+      },      
+      {
+        organization: organization._id,
+        title: 'Monday Mania',
+        description: 'Mania on Monday',
+        list: 'option1'
+      },
+    ]);
+      
+    return request(app)
+      .get(`/api/v1/polls?organization=${organization.id}`)
+    
+      .then(res => {
+        expect(res.body).toEqual(expect.arrayContaining([
+          {
+            _id: expect.anything(),
+            title: 'Taco Tuesday',
+          },      {
+            _id: expect.anything(),
+            title: 'Monday Mania',
+          },
+        ]));
       });
   });
 });

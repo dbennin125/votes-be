@@ -36,7 +36,6 @@ describe('Organization routes', () => {
           title: 'Brunch Club',
           description: 'A club for brunch',
           imageUrl: 'somestring',
-          __v: 0
         });
       });
   });
@@ -74,7 +73,6 @@ describe('Organization routes', () => {
           title: 'New Club',
           description: 'A club for brunch',
           imageUrl: 'somestring',
-          __v: 0
         });
       });
   });
@@ -95,7 +93,6 @@ describe('Organization routes', () => {
           title: 'Brunch Club',
           description: 'A club for brunch',
           imageUrl: 'somestring',
-          __v: 0
         });
       });
   });
@@ -116,7 +113,6 @@ describe('Organization routes', () => {
           title: 'Delete Club',
           description: 'A club for deleting',
           imageUrl: 'somestring',
-          __v: 0
         });
       });
   });
