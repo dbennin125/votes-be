@@ -54,7 +54,7 @@ describe('Poll routes', () => {
       });
   });
 
-  it.only('gets all polls for an organization\'s ID via GET', async() => {
+  it('gets all polls for an organization\'s ID via GET', async() => {
     await Poll.create([
       {
         organization: organization._id,
@@ -83,6 +83,29 @@ describe('Poll routes', () => {
             title: 'Monday Mania',
           },
         ]));
+      });
+  });
+
+  it('gets a poll by ID via GET', async() => {
+    return Poll.create({
+      organization: organization._id,
+      title: 'Monday Mania',
+      description: 'Mania on Monday',
+      list: 'option4'
+    })
+      .then(poll => request(app).get(`/api/v1/polls/${poll.id}`))
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          organization: {
+            _id: organization.id,
+            title: 'Brunch Club'
+          },
+          title: 'Monday Mania',
+          description: 'Mania on Monday',
+          list: 'option4',
+          __v: 0
+        });
       });
   });
 });
