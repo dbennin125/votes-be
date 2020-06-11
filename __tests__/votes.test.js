@@ -74,7 +74,7 @@ describe('vote routes', () => {
       });
   });
   
-  it('gets all vote via GET', async() => {
+  it('gets all votes by a poll via GET', async() => {
     return Vote.create({
       poll: poll._id,
       user: user.id,
@@ -91,6 +91,87 @@ describe('vote routes', () => {
               user: user.id
             }
           ]));
+      });
+  });
+
+  it('gets all votes by a user via GET', async() => {
+    return Vote.create({
+      poll: poll._id,
+      user: user.id,
+      option: 'acoolstring'
+    })
+      .then(() => request(app).get(`/api/v1/votes?user=${user.id}`))
+      .then(res => {
+        expect(res.body).toEqual(expect.arrayContaining(
+          [
+            { 
+              _id: expect.anything(),
+              option: 'acoolstring',
+              poll: { _id: poll.id },
+              user: user.id
+            }
+          ]));
+      });
+  });
+
+  it('gets vote by ID via GET', () => {
+    return Vote.create({ 
+      poll: poll._id,
+      user: user.id,
+      option: 'asupercoolstring'
+    })
+      .then(vote => {
+        return request(app)
+          .get(`/api/v1/votes/${vote._id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          poll: poll.id,
+          user: user.id,
+          option: 'asupercoolstring'
+        });
+      });
+  });
+
+  it('updates vote by ID via PATCH', () => {
+    return Vote.create({ 
+      poll: poll._id,
+      user: user.id,
+      option: 'asupercoolstring'
+    })
+      .then(vote => {
+        return request(app)
+          .patch(`/api/v1/votes/${vote._id}`)
+          .send({ option: 'wickedstring' });
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          poll: poll.id,
+          user: user.id,
+          option: 'wickedstring'
+        });
+      });
+  });
+
+  it('deletes a vote by ID via DELETE', () => {
+    return Vote.create({ 
+      poll: poll._id,
+      user: user.id,
+      option: 'deletestring'
+    })
+      .then(vote => {
+        return request(app)
+          .delete(`/api/v1/votes/${vote._id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          poll: poll.id,
+          user: user.id,
+          option: 'deletestring'
+        });
       });
   });
 });
