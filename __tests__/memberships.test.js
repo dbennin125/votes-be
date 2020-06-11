@@ -58,4 +58,46 @@ describe('Membership routes', () => {
         });
       });
   });
+
+  it('gets all users for an organization\'s ID via GET', async() => {
+    await Membership.create([
+      {
+        organization: organization._id,
+        user: user._id
+      },      
+      {
+        organization: organization._id,
+        user: user._id
+      },
+    ]);
+    return request(app)
+      .get(`/api/v1/memberships?organization=${organization.id}`)
+    
+      .then(res => {
+        expect(res.body).toEqual(expect.arrayContaining([{"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", 
+          "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}, {"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}]));
+      });
+  });
+
+  it('gets all organizations for an user\'s ID via GET', async() => {
+    await Membership.create([
+      {
+        organization: organization._id,
+        user: user._id
+      },      
+      {
+        organization: organization._id,
+        user: user._id
+      },
+    ]);
+    return request(app)
+      .get(`/api/v1/memberships?user=${user.id}`)
+    
+      .then(res => {
+        expect(res.body).toEqual(expect.arrayContaining([{"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", 
+          "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}, {"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}]));
+      });
+  });
+
+  
 });
