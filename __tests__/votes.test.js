@@ -57,6 +57,21 @@ describe('vote routes', () => {
   });
     
   it('creates a vote via POST', async() => {
-        
+    return request(app)
+      .post('/api/v1/votes')
+      .send({
+        poll: poll._id,
+        user: user.id,
+        option: 'astring'
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          poll: poll.id,
+          user: user.id,
+          option: 'astring',
+        });
+      });
   });
+  
 });
