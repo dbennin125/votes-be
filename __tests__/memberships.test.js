@@ -74,8 +74,25 @@ describe('Membership routes', () => {
       .get(`/api/v1/memberships?organization=${organization.id}`)
     
       .then(res => {
-        expect(res.body).toEqual(expect.arrayContaining([{"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", 
-          "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}, {"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}]));
+        expect(res.body).toEqual(expect.arrayContaining([
+          { _id: expect.anything(),
+            organization: 
+            { _id: expect.anything(),
+              imageUrl: 'somestring',
+              title: 'Brunch Club' },
+            user: { _id: expect.anything(),
+              imageUrl: 'somestring',
+              name: 'Bob' }
+          }, 
+          { _id: expect.anything(),
+            organization: 
+            { _id: expect.anything(),
+              imageUrl: 'somestring',
+              title: 'Brunch Club' },
+            user: { _id: expect.anything(),
+              imageUrl: 'somestring',
+              name: 'Bob' } }]
+        ));
       });
   });
 
@@ -94,8 +111,25 @@ describe('Membership routes', () => {
       .get(`/api/v1/memberships?user=${user.id}`)
     
       .then(res => {
-        expect(res.body).toEqual(expect.arrayContaining([{"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", 
-          "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}, {"_id": expect.anything(), "organization": {"_id": expect.anything(), "imageUrl": "somestring", "title": "Brunch Club"}, "user": {"_id": expect.anything(), "imageUrl": "somestring", "name": "Bob"}}]));
+        expect(res.body).toEqual(expect.arrayContaining([
+          { _id: expect.anything(),
+            organization: 
+            { _id: expect.anything(),
+              imageUrl: 'somestring',
+              title: 'Brunch Club' },
+            user: { _id: expect.anything(),
+              imageUrl: 'somestring',
+              name: 'Bob' }
+          }, 
+          { _id: expect.anything(),
+            organization: 
+            { _id: expect.anything(),
+              imageUrl: 'somestring',
+              title: 'Brunch Club' },
+            user: { _id: expect.anything(),
+              imageUrl: 'somestring',
+              name: 'Bob' } }]
+        ));
       });
   });
 
