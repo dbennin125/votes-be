@@ -74,4 +74,23 @@ describe('vote routes', () => {
       });
   });
   
+  it('gets all vote via GET', async() => {
+    return Vote.create({
+      poll: poll._id,
+      user: user.id,
+      option: 'anewstring'
+    })
+      .then(() => request(app).get(`/api/v1/votes?poll=${poll.id}`))
+      .then(res => {
+        expect(res.body).toEqual(expect.arrayContaining(
+          [
+            { 
+              _id: expect.anything(),
+              option: 'anewstring',
+              poll: { _id: poll.id },
+              user: user.id
+            }
+          ]));
+      });
+  });
 });
