@@ -167,7 +167,7 @@ describe('Membership routes', () => {
           organization: organization.id,
           user: user.id,
         });
-        return Vote.find({ user : user.id });
+        return Vote.find({ membership : membership.id });
       })
       .then(vote => {
         expect(vote).toEqual([]);
