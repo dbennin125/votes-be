@@ -49,7 +49,6 @@ describe('Poll routes', () => {
           title: 'Casual Friday',
           description: 'Jean and T-shirts',
           list: 'option1',
-          __v: 0
         });
       });
   });
@@ -104,7 +103,7 @@ describe('Poll routes', () => {
           title: 'Monday Mania',
           description: 'Mania on Monday',
           list: 'option4',
-          __v: 0
+
         });
       });
   });
@@ -131,7 +130,6 @@ describe('Poll routes', () => {
           title: 'Freebie Friday',
           description: 'Mania on Monday',
           list: 'option3',
-          __v: 0,
         });
       });
   });
@@ -154,9 +152,7 @@ describe('Poll routes', () => {
           title: 'Monday Mania',
           description: 'Mania on Monday',
           list: 'option4',
-          __v: 0,
         });
       });
   });
-
 });
