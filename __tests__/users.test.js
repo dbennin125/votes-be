@@ -3,6 +3,7 @@ const mongod = new MongoMemoryServer();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
 const User = require('../lib/models/User');
+const Organization = require('../lib/models/Organization');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -17,6 +18,16 @@ describe('User routes', () => {
     return mongoose.connection.dropDatabase();
   });
 
+  let organization;
+  beforeEach(async() => {
+    organization = await Organization.create({
+      title: 'Brunch Club',
+      description: 'A club for brunch',
+      imageUrl: 'somestring'
+    });
+    
+  });
+  
   afterAll(async() => {
     await mongoose.connection.close();
     return mongod.stop();
@@ -40,7 +51,6 @@ describe('User routes', () => {
           email: 'not@realmail.com',
           communicationMedium: ['phone'],
           imageUrl: 'somestring',
-          __v: 0
         });
       });
   });
@@ -84,7 +94,6 @@ describe('User routes', () => {
           email: 'not@realmail.com',
           communicationMedium: ['phone'],
           imageUrl: 'somestring',
-          __v: 0
         });
       });
   });
@@ -109,7 +118,32 @@ describe('User routes', () => {
           email: 'not@realmail.com',
           communicationMedium: ['phone'],
           imageUrl: 'somestring',
-          __v: 0
+        });
+      });
+  });
+
+  it('gets a user by ID, displays all organizations via GET route', () => {
+    
+    return User.create({ 
+      name: 'Rob',
+      phone: '15031112222',
+      email: 'not@realmail.com',
+      communicationMedium: ['phone'],
+      imageUrl: 'somestring'
+    })
+      .then(user => {
+        return request(app)
+          .get(`/api/v1/users/${user._id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          name: 'Rob',
+          phone: '15031112222',
+          organizations: [], 
+          email: 'not@realmail.com',
+          communicationMedium: ['phone'],
+          imageUrl: 'somestring',
         });
       });
   });

@@ -6,6 +6,7 @@ const connect = require('../lib/utils/connect');
 const Organization = require('../lib/models/Organization');
 const Vote = require('../lib/models/Vote');
 const Poll = require('../lib/models/Poll');
+const User = require('../lib/models/User');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -19,7 +20,17 @@ describe('Organization routes', () => {
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
   });
-
+  let user;
+  beforeEach(async() => {
+    user = await User.create({
+      name: 'Bob',
+      phone: '15031112222',
+      email: 'not@realmail.com',
+      communicationMedium: ['phone'],
+      imageUrl: 'somestring'
+    });
+    
+  });
   afterAll(async() => {
     await mongoose.connection.close();
     return mongod.stop();
@@ -94,6 +105,7 @@ describe('Organization routes', () => {
         expect(res.body).toEqual({
           _id: expect.anything(),
           title: 'Brunch Club',
+          memberships: [],
           description: 'A club for brunch',
           imageUrl: 'somestring',
         });
@@ -160,45 +172,84 @@ describe('Organization routes', () => {
       });
   });
 
-  // it('deletes an organization,polls, and votes by ID via DELETE', async() => {
-  //   const organization = Organization.create({ 
-  //     title: 'Delete Club',
-  //     description: 'A club for deleting',
-  //     imageUrl: 'somestring'
-  //   });
+  it('deletes an organization,polls, and votes by ID via DELETE', async() => {
+    const organization = await Organization.create({ 
+      title: 'Delete Club',
+      description: 'A club for deleting',
+      imageUrl: 'somestring'
+    });
 
-  //   await Poll.create([
-  //     {
-  //       organization: organization._id,
-  //       title: 'Monday Mania',
-  //       description: 'Mania on Monday',
-  //       list: 'option4'
-  //     },      
-  //     {
-  //       organization: organization._id,
-  //       title: 'Monday Mania',
-  //       description: 'Mania on Monday',
-  //       list: 'option2'
-  //     },
-  //     {
-  //       organization: new mongoose.Types.ObjectId(),
-  //       title: 'Monday Mania',
-  //       description: 'Mania on Monday',
-  //       list: 'option2'
-  //     }
-  //   ])
+    const user = await User.create({
+      name: 'Bob',
+      phone: '15031112222',
+      email: 'not@realmail.com',
+      communicationMedium: ['phone'],
+      imageUrl: 'somestring'
+    });
+    const poll = await Poll.create([
+      {
+        organization: organization._id,
+        title: 'Monday Mania',
+        description: 'Mania on Monday',
+        list: 'option4'
+      },      
+      {
+        organization: new mongoose.Types.ObjectId(),
+        title: 'Monday Mania',
+        description: 'Mania on Monday',
+        list: 'option2'
+      }
+    ]);
+    const vote = await Vote.create([
+      {
+        poll: poll._id,
+        user: user.id,
+        option: 'astring'
+      },
+      {
+        poll: poll._id,
+        user: user.id,
+        option: 'anewstring'
+      }
+    ]);
 
-  //     .then(organization => {
-  //       return request(app)
-  //         .delete(`/api/v1/organizations/${organization._id}`);
-  //     })
-  //     .then(res => {
-  //       expect(res.body).toEqual({
-  //         _id: expect.anything(),
-  //         title: 'Delete Club',
-  //         description: 'A club for deleting',
-  //         imageUrl: 'somestring',
-  //       });
-  //     });
-  // });
+    return request(app)
+      .delete(`/api/v1/organizations/${organization._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          title: 'Delete Club',
+          description: 'A club for deleting',
+          imageUrl: 'somestring',
+        });
+        return Poll.find({ organization: organization.id }),
+        Vote.find({ organization: vote.id });
+      })
+      .then(poll, vote => {
+        expect(poll, vote).toEqual([]);
+      });
+  });
+
+  it('gets an organization by ID and shows all members via GET', () => {
+
+    return Organization.create({ 
+      title: 'Brunch Club',
+      description: 'A club for brunch',
+      imageUrl: 'somestring'
+    })
+    
+      .then(organization => {
+        return request(app)
+          .get(`/api/v1/organizations/${organization._id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          title: 'Brunch Club',
+          memberships: [],
+          description: 'A club for brunch',
+          imageUrl: 'somestring',
+        });
+      });
+  });
 });
