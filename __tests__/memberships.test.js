@@ -99,5 +99,21 @@ describe('Membership routes', () => {
       });
   });
 
-  
+  it('gets a membership and deletes via DELETE', () => {
+    return Membership.create({
+      organization: organization._id,
+      user: user._id
+    })
+      .then(member => {
+        return request(app)
+          .delete(`/api/v1/memberships/${member.id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.anything(),
+          organization: organization.id,
+          user: user.id,
+        });
+      });
+  });
 });
