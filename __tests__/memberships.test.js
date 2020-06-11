@@ -2,9 +2,12 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongod = new MongoMemoryServer();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
+
 const Membership = require('../lib/models/Membership');
 const User = require('../lib/models/User');
 const Organization = require('../lib/models/Organization');
+const Vote = require('../lib/models/Vote');
+const Poll = require('../lib/models/Poll');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -133,21 +136,41 @@ describe('Membership routes', () => {
       });
   });
 
-  it('gets a membership and deletes via DELETE', () => {
-    return Membership.create({
+  it('deletes a membership by ID and all votes via DELETE', async() => {
+    const membership = await Membership.create({
       organization: organization._id,
       user: user._id
-    })
-      .then(member => {
-        return request(app)
-          .delete(`/api/v1/memberships/${member.id}`);
-      })
+    });
+    const poll = await Poll({
+      organization: organization._id,
+      title: 'Monday Mania',
+      description: 'Mania on Monday',
+      list: 'option4'
+    });
+    const vote = await Vote.create([
+      {
+        poll: poll._id,
+        user: user.id,
+        option: 'astring'
+      },
+      {
+        poll: poll._id,
+        user: user.id,
+        option: 'anewstring'
+      }
+    ]);
+    return request(app)
+      .delete(`/api/v1/memberships/${membership.id}/${user.id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.anything(),
           organization: organization.id,
           user: user.id,
         });
+        return Vote.find({ user : user.id });
+      })
+      .then(vote => {
+        expect(vote).toEqual([]);
       });
   });
 });

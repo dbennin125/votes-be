@@ -2,7 +2,10 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongod = new MongoMemoryServer();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
+
 const Organization = require('../lib/models/Organization');
+const Vote = require('../lib/models/Vote');
+const Poll = require('../lib/models/Poll');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -156,4 +159,46 @@ describe('Organization routes', () => {
         ]);
       });
   });
+
+  // it('deletes an organization,polls, and votes by ID via DELETE', async() => {
+  //   const organization = Organization.create({ 
+  //     title: 'Delete Club',
+  //     description: 'A club for deleting',
+  //     imageUrl: 'somestring'
+  //   });
+
+  //   await Poll.create([
+  //     {
+  //       organization: organization._id,
+  //       title: 'Monday Mania',
+  //       description: 'Mania on Monday',
+  //       list: 'option4'
+  //     },      
+  //     {
+  //       organization: organization._id,
+  //       title: 'Monday Mania',
+  //       description: 'Mania on Monday',
+  //       list: 'option2'
+  //     },
+  //     {
+  //       organization: new mongoose.Types.ObjectId(),
+  //       title: 'Monday Mania',
+  //       description: 'Mania on Monday',
+  //       list: 'option2'
+  //     }
+  //   ])
+
+  //     .then(organization => {
+  //       return request(app)
+  //         .delete(`/api/v1/organizations/${organization._id}`);
+  //     })
+  //     .then(res => {
+  //       expect(res.body).toEqual({
+  //         _id: expect.anything(),
+  //         title: 'Delete Club',
+  //         description: 'A club for deleting',
+  //         imageUrl: 'somestring',
+  //       });
+  //     });
+  // });
 });
