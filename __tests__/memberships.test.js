@@ -160,7 +160,7 @@ describe('Membership routes', () => {
       }
     ]);
     return request(app)
-      .delete(`/api/v1/memberships/${membership.id}/${user.id}`)
+      .delete(`/api/v1/memberships/${membership.id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.anything(),
