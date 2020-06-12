@@ -3,7 +3,7 @@ const mongod = new MongoMemoryServer();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
 const User = require('../lib/models/User');
-const Organization = require('../lib/models/Organization');
+
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -16,16 +16,6 @@ describe('User routes', () => {
 
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
-  });
-
-  let organization;
-  beforeEach(async() => {
-    organization = await Organization.create({
-      title: 'Brunch Club',
-      description: 'A club for brunch',
-      imageUrl: 'somestring'
-    });
-    
   });
   
   afterAll(async() => {

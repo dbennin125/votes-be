@@ -20,17 +20,7 @@ describe('Organization routes', () => {
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
   });
-  let user;
-  beforeEach(async() => {
-    user = await User.create({
-      name: 'Bob',
-      phone: '15031112222',
-      email: 'not@realmail.com',
-      communicationMedium: ['phone'],
-      imageUrl: 'somestring'
-    });
-    
-  });
+
   afterAll(async() => {
     await mongoose.connection.close();
     return mongod.stop();
