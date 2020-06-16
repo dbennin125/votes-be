@@ -47,5 +47,32 @@ describe('auth routes', () => {
       });
   });
 
+  it('has an authToken method', () => {
+    
+    const user = new User({
+      name: 'Bob',
+      password: 'password',
+      phone: '15031112222',
+      email: 'not@realmail.com',
+      communicationMedium: ['phone'],
+      imageUrl: 'somestring'
+    });
+    expect(user.authToken()).toEqual(expect.any(String));
+  });
+
+  it('can verify a token and return a user', () => {
+    const user = new User({
+      name: 'Bob',
+      password: 'password',
+      phone: '15031112222',
+      email: 'not@realmail.com',
+      communicationMedium: ['phone'],
+      imageUrl: 'somestring'
+    });
+    const token = user.authToken();
+    const verifiedUser = User.verifyToken(token);
+
+    expect(verifiedUser.toJSON()).toEqual(user.toJSON());
+  }); 
 });
 
