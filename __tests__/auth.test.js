@@ -74,5 +74,43 @@ describe('auth routes', () => {
 
     expect(verifiedUser.toJSON()).toEqual(user.toJSON());
   }); 
+
+  it('can verify a logged in user', async() => {
+    const user = await User.create({
+      name: 'Bob',
+      password: 'password',
+      phone: '15031112222',
+      email: 'not@realmail.com',
+      communicationMedium: ['phone'],
+      imageUrl: 'somestring'
+    });
+
+ 
+    const agent = request.agent(app);
+
+   
+    return agent
+      .post('/api/v1/auth/login')
+      .send({
+        email: 'not@realmail.com',
+        password: 'password'
+      })
+      .then(() => {
+        
+        return agent
+          .get('/api/v1/auth/verify');
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: user.id,
+          name: 'Bob',
+          phone: '15031112222',
+          email: 'not@realmail.com',
+          communicationMedium: ['phone'],
+          imageUrl: 'somestring'
+        });
+      });
+  });
+
 });
 

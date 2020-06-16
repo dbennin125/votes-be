@@ -1,8 +1,11 @@
+require('dotenv').config();
+
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongod = new MongoMemoryServer();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
 const User = require('../lib/models/User');
+
 
 
 const request = require('supertest');
@@ -64,26 +67,35 @@ describe('User routes', () => {
         });
       });
   });
-
-  it('updates a user by ID via PATCH', () => {
-    return User.create({ 
+  
+  it('updates a user by ID via PATCH route', async() => {
+    const user = await User.create({ 
       name: 'Bob',
-      phone: '15031112222',
       password: 'password',
+      phone: '15031112222',
       email: 'not@realmail.com',
       communicationMedium: ['phone'],
       imageUrl: 'somestring'
-    })
-      .then(user => {
-        return request(app)
-          .patch(`/api/v1/users/${user._id}`)
-          .send({ name: 'Jim', phone: '5415551234' });
+    });
+      
+    const agent = request.agent(app);
+    
+    return agent
+      .post('/api/v1/auth/login')
+      .send({ 
+        email: 'not@realmail.com',
+        password: 'password',
       })
+      .then(() => agent
+        .patch(`/api/v1/users/${user._id}`)
+        .send({ name: 'Jim' }))
+ 
+      
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.anything(),
           name: 'Jim',
-          phone: '5415551234',
+          phone: '15031112222',
           email: 'not@realmail.com',
           communicationMedium: ['phone'],
           imageUrl: 'somestring',
@@ -91,19 +103,28 @@ describe('User routes', () => {
       });
   });
 
-  it('deletes a user by ID via DELETE route', () => {
-    return User.create({ 
+  it('deletes a user by ID via DELETE route', async() => {
+    const user = await User.create({ 
       name: 'Bob',
       password: 'password',
       phone: '15031112222',
       email: 'not@realmail.com',
       communicationMedium: ['phone'],
       imageUrl: 'somestring'
-    })
-      .then(user => {
-        return request(app)
-          .delete(`/api/v1/users/${user._id}`);
+    });
+      
+    const agent = request.agent(app);
+    
+    return agent
+      .post('/api/v1/auth/login')
+      .send({ 
+        email: 'not@realmail.com',
+        password: 'password',
       })
+      .then(() => agent
+        .delete(`/api/v1/users/${user._id}`))
+ 
+      
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.anything(),
@@ -116,20 +137,27 @@ describe('User routes', () => {
       });
   });
 
-  it('gets a user by ID, displays all organizations via GET route', () => {
+  it('gets a user by ID, displays all organizations via GET route', async() => {
     
-    return User.create({ 
+    const user = await User.create({ 
       name: 'Rob',
       password: 'password',
       phone: '15031112222',
       email: 'not@realmail.com',
       communicationMedium: ['phone'],
       imageUrl: 'somestring'
-    })
-      .then(user => {
-        return request(app)
-          .get(`/api/v1/users/${user._id}`);
+    });
+    const agent = request.agent(app);
+
+    return agent
+      .post('/api/v1/auth/login')
+      .send({ 
+        email: 'not@realmail.com',
+        password: 'password',
       })
+      .then(() => agent
+        .get(`/api/v1/users/${user._id}`))
+
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.anything(),
