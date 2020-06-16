@@ -28,6 +28,7 @@ describe('User routes', () => {
       .post('/api/v1/users')
       .send({
         name: 'Bob',
+        password: 'password',
         phone: '15031112222',
         email: 'not@realmail.com',
         communicationMedium: ['phone'],
@@ -50,6 +51,7 @@ describe('User routes', () => {
       .post('/api/v1/users')
       .send({
         name: 'Bob',
+        password: 'password',
         phone: '1112222',
         email: 'not@realmail.com',
         communicationMedium: ['smoke signals'],
@@ -67,6 +69,7 @@ describe('User routes', () => {
     return User.create({ 
       name: 'Bob',
       phone: '15031112222',
+      password: 'password',
       email: 'not@realmail.com',
       communicationMedium: ['phone'],
       imageUrl: 'somestring'
@@ -91,6 +94,7 @@ describe('User routes', () => {
   it('deletes a user by ID via DELETE route', () => {
     return User.create({ 
       name: 'Bob',
+      password: 'password',
       phone: '15031112222',
       email: 'not@realmail.com',
       communicationMedium: ['phone'],
@@ -116,6 +120,7 @@ describe('User routes', () => {
     
     return User.create({ 
       name: 'Rob',
+      password: 'password',
       phone: '15031112222',
       email: 'not@realmail.com',
       communicationMedium: ['phone'],

@@ -44,6 +44,7 @@ describe('vote routes', () => {
   beforeEach(async() => {
     user = await User.create({
       name: 'Bob',
+      password: 'password',
       phone: '15031112222',
       email: 'not@realmail.com',
       communicationMedium: ['phone'],
