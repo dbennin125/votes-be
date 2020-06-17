@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongod = new MongoMemoryServer();
 const mongoose = require('mongoose');
@@ -42,13 +44,25 @@ describe('Membership routes', () => {
       imageUrl: 'somestring'
     });
   });
+
+  const agent = request.agent(app);
+  
+  beforeEach(() => {
+    return agent
+      .post('/api/v1/auth/login')
+      .send({
+        email: 'not@realmail.com',
+        password: 'password',
+      });
+  });
+  
   afterAll(async() => {
     await mongoose.connection.close();
     return mongod.stop();
   });
 
   it('creates a membership via POST', () => {
-    return request(app)
+    return agent
       .post('/api/v1/memberships')
       .send({
         organization: organization._id,
@@ -63,8 +77,9 @@ describe('Membership routes', () => {
       });
   });
 
-  it('gets all users for an organization\'s ID via GET', async() => {
-    await Membership.create([
+  it('gets all users for an organization\'s ID via GET', () => {
+    
+    return  Membership.create([
       {
         organization: organization._id,
         user: user._id
@@ -73,9 +88,9 @@ describe('Membership routes', () => {
         organization: organization._id,
         user: user._id
       },
-    ]);
-    return request(app)
-      .get(`/api/v1/memberships?organization=${organization.id}`)
+    ])
+      .then (() => agent
+        .get(`/api/v1/memberships?organization=${organization.id}`))
     
       .then(res => {
         expect(res.body).toEqual(expect.arrayContaining([
@@ -100,8 +115,8 @@ describe('Membership routes', () => {
       });
   });
 
-  it('gets all organizations for an user\'s ID via GET', async() => {
-    await Membership.create([
+  it('gets all organizations for an user\'s ID via GET', () => {
+    return Membership.create([
       {
         organization: organization._id,
         user: user._id
@@ -110,9 +125,9 @@ describe('Membership routes', () => {
         organization: organization._id,
         user: user._id
       },
-    ]);
-    return request(app)
-      .get(`/api/v1/memberships?user=${user.id}`)
+    ])
+      .then(() => agent
+        .get(`/api/v1/memberships?user=${user.id}`))
     
       .then(res => {
         expect(res.body).toEqual(expect.arrayContaining([

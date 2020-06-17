@@ -112,5 +112,32 @@ describe('auth routes', () => {
       });
   });
 
+  it('can log a user in via POST', async() => {
+    const user = await User.create({
+      name: 'Bob',
+      password: 'password',
+      phone: '15031112222',
+      email: 'not@realmail.com',
+      communicationMedium: ['phone'],
+      imageUrl: 'somestring'
+    });
+    return request(app)
+      .post('/api/v1/auth/login')
+      .send({
+        email: 'not@realmail.com',
+        password: 'password'
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: user.id,
+          name: 'Bob',
+          phone: '15031112222',
+          email: 'not@realmail.com',
+          communicationMedium: ['phone'],
+          imageUrl: 'somestring'
+        });
+      });
+  });
+
 });
 
