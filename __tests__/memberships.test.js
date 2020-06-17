@@ -153,17 +153,13 @@ describe('Membership routes', () => {
   });
 
   it('deletes a membership by ID and all votes via DELETE', async() => {
-    const membership = await Membership.create({
-      organization: organization._id,
-      user: user._id
-    });
     const poll = await Poll({
       organization: organization._id,
       title: 'Monday Mania',
       description: 'Mania on Monday',
       list: 'option4'
     });
-    const vote = await Vote.create([
+    await Vote.create([
       {
         poll: poll._id,
         user: user.id,
@@ -175,15 +171,20 @@ describe('Membership routes', () => {
         option: 'anewstring'
       }
     ]);
-    return request(app)
-      .delete(`/api/v1/memberships/${membership.id}`)
+    const membership = await Membership.create({
+      organization: organization._id,
+      user: user._id
+    });
+ 
+    return agent
+      .delete(`/api/v1/memberships/${membership._id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.anything(),
           organization: organization.id,
           user: user.id,
         });
-        return Vote.find({ membership : membership.id });
+        return Vote.find({ membership : membership._id });
       })
       .then(vote => {
         expect(vote).toEqual([]);
