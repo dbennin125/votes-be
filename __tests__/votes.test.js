@@ -192,4 +192,39 @@ describe('vote routes', () => {
       });
   });
 
+  it('amount of votes each option got', async() => {
+    await Vote.create([
+      { 
+        poll: poll._id,
+        user: user.id,
+        option: 'deletestring',
+      },
+      { 
+        poll: poll._id,
+        user: user.id,
+        option: 'nostring',
+      },
+      { 
+        poll: poll._id,
+        user: user.id,
+        option: 'deletestring',
+      }
+    ]);
+    //only one vote per user on an option so this test is interesting. 
+    return request(app)
+      .get('/api/v1/votes/by-option')
+      .then(res => {
+        expect(res.body).toEqual(expect.arrayContaining([
+          {
+            _id: 'deletestring', 
+            option: 1
+          }, 
+          {
+            _id: 'nostring', 
+            option: 1
+          }, 
+        ]));
+      });
+  });
+
 });
