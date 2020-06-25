@@ -175,4 +175,21 @@ describe('vote routes', () => {
         });
       });
   });
+  
+  it('gets a user\'s name and total votes', async() => {
+    await Vote.create({ 
+      poll: poll._id,
+      user: user.id,
+      option: 'deletestring'
+    });
+    return request(app)
+      .get('/api/v1/votes/by-user')
+      .then(res => {
+        expect(res.body).toEqual([{
+          _id: 'Bob', 
+          votesByUser: 1
+        }]);
+      });
+  });
+
 });

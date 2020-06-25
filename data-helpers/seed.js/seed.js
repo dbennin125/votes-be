@@ -7,7 +7,7 @@ const Membership = require('../../lib/models/Membership');
 const Vote = require('../../lib/models/Vote');
 
 
-module.exports = async({ users = 3, organizations = 4, polls = 3, memberships = 3, votes = 8 } = {}) => {
+module.exports = async({ users = 3, organizations = 4, polls = 3, memberships = 3, votes = 20 } = {}) => {
   const communication = ['phone', 'email'];
   
 
@@ -37,6 +37,6 @@ module.exports = async({ users = 3, organizations = 4, polls = 3, memberships = 
   await Vote.create([...Array(votes)].map(() => ({
     poll: chance.pickone(newPoll)._id,
     user: chance.pickone(newUser)._id,
-    option: chance.profession()
+    option: chance.pickone(['option1', 'option2', 'option3', 'option4', 'option5'])
   })));
 };
